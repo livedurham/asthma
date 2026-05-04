@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1f2e">
+<title>氣喘生物製劑輔助系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f4f0;--surface:#ffffff;--surface2:#f9f8f5;--border:#e4e2dc;
+    --accent:#2c4a6e;--accent2:#4a7fa5;--text:#1a1f2e;--text2:#5a6070;--text3:#8a90a0;
+    --ok:#3a7d5a;--warn:#8a6c2a;--danger:#8a3a3a;--radius:12px;
+    --shadow:0 1px 3px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px;}
+  .header{background:var(--accent);color:#fff;padding:52px 20px 20px;position:sticky;top:0;z-index:100;}
+  .header-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;}
+  .header-title{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;letter-spacing:0.3px;line-height:1.3;}
+  .header-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;}
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:1 0 auto;padding:13px 10px;font-size:12px;font-weight:500;font-family:'Noto Sans TC',sans-serif;border:none;background:none;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;white-space:nowrap;letter-spacing:0.3px;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .content{padding:16px 14px 0;}
+  .card{background:var(--surface);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+  .card-title{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;}
+  .form-hint{font-size:10px;color:var(--text3);margin-top:2px;line-height:1.5;}
+  input[type="number"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:15px;font-family:'Noto Sans TC',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
+  input[type="number"]:focus{border-color:var(--accent2);}
+  .check-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;}
+  .check-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+  .check-box.checked{background:var(--accent);border-color:var(--accent);}
+  .check-box.checked::after{content:'';display:block;width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-2px);}
+  .check-label{font-size:13px;color:var(--text2);}
+  .chip-group{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{padding:7px 13px;border-radius:20px;font-size:12px;font-family:'Noto Sans TC',sans-serif;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.2s;}
+  .chip.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+  .btn-primary{width:100%;padding:16px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:600;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s;margin-top:4px;}
+  .btn-primary:active{background:#1e3550;}
+  .phenotype-card{background:var(--surface);border-radius:var(--radius);padding:18px;margin-bottom:12px;border-left:3px solid var(--accent);box-shadow:var(--shadow);}
+  .phenotype-label-sm{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+  .phenotype-value{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);}
+  .biomarker-row{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap;}
+  .biomarker-item{text-align:center;}
+  .biomarker-val{font-size:18px;font-weight:700;color:var(--text);}
+  .biomarker-key{font-size:10px;color:var(--text3);margin-top:1px;}
+  .biomarker-unit{font-size:10px;color:var(--text3);}
+  .rec-card{background:var(--surface);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+  .rec-card.top{border-top:3px solid var(--accent);}
+  .rec-badge{display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:var(--accent);color:#fff;padding:3px 9px;border-radius:20px;margin-bottom:8px;}
+  .rec-drug{font-family:'DM Serif Display',serif;font-size:21px;color:var(--text);}
+  .rec-brand{font-size:12px;color:var(--text3);margin-top:1px;}
+  .rec-target{display:inline-block;font-size:11px;font-weight:600;color:var(--accent2);background:#eef4f9;padding:3px 10px;border-radius:20px;margin-top:6px;}
+  .rec-note{font-size:13px;color:var(--text2);margin-top:10px;padding:10px 12px;background:var(--surface2);border-radius:8px;line-height:1.5;}
+  .rec-schedule{font-size:13px;font-weight:600;color:var(--accent);margin-top:10px;}
+  .rec-link{display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--accent2);border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;background:none;font-family:'Noto Sans TC',sans-serif;transition:background 0.15s;}
+  .rec-link:active{background:var(--surface2);}
+  .tag-age{display:inline-block;font-size:10px;font-weight:700;background:#fdf8f0;color:#8a5a20;border:1px solid #e8d0a0;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .renew-box{font-size:11px;color:var(--accent2);font-weight:600;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-top:8px;border-left:2px solid var(--accent2);}
+  .schedule-dots{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+  .dot{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text2);background:var(--surface2);}
+  .dot.filled{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .dot.light{background:#dde8f0;border-color:#dde8f0;color:var(--accent);}
+  .ref-nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px;scrollbar-width:none;}
+  .ref-nav::-webkit-scrollbar{display:none;}
+  .ref-btn{padding:8px 14px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;white-space:nowrap;font-family:'Noto Sans TC',sans-serif;font-weight:400;transition:all 0.2s;}
+  .ref-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+  .detail-header{background:var(--accent);color:#fff;border-radius:var(--radius);padding:20px 18px;margin-bottom:12px;}
+  .detail-drug{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;}
+  .detail-brand{font-size:12px;color:rgba(255,255,255,0.6);margin-top:3px;}
+  .detail-target{display:inline-block;font-size:11px;font-weight:600;background:rgba(255,255,255,0.15);padding:3px 12px;border-radius:20px;margin-top:8px;}
+  .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .info-row:last-child{border-bottom:none;}
+  .info-key{color:var(--text3);}
+  .info-val{font-weight:600;color:var(--text);text-align:right;max-width:65%;}
+  .nhi-item{display:flex;gap:8px;margin-bottom:9px;font-size:13px;color:var(--text2);line-height:1.5;}
+  .nhi-dot{width:5px;height:5px;border-radius:50%;background:var(--accent2);margin-top:6px;flex-shrink:0;}
+  .nhi-special{background:#f0f5f9;border-radius:8px;padding:8px 12px;margin-bottom:9px;font-size:12px;color:var(--accent);font-weight:500;}
+  .nhi-warn{background:#fdf8f0;border-radius:8px;padding:8px 12px;margin-bottom:9px;font-size:12px;color:var(--warn);font-weight:500;}
+  .note-box{background:var(--surface2);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6;margin-top:4px;border-left:2px solid var(--accent2);}
+  .cl-header{background:var(--accent);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:12px;}
+  .cl-title{font-family:'DM Serif Display',serif;font-size:19px;font-weight:400;}
+  .cl-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-top:3px;}
+  .progress-bar{height:4px;background:rgba(255,255,255,0.2);border-radius:10px;margin-top:14px;overflow:hidden;}
+  .progress-fill{height:100%;background:#fff;border-radius:10px;transition:width 0.4s ease;}
+  .progress-label{font-size:11px;color:rgba(255,255,255,0.6);margin-top:5px;text-align:right;}
+  .cl-item{background:var(--surface);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:opacity 0.2s;}
+  .cl-item.required{border-left:3px solid #b0724a;}
+  .cl-item.done{opacity:0.5;}
+  .cl-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .cl-check.checked{background:var(--ok);border-color:var(--ok);}
+  .cl-check.checked::after{content:'';display:block;width:11px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-2px);}
+  .cl-text{flex:1;}
+  .cl-label{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;}
+  .cl-label.done-text{text-decoration:line-through;color:var(--text3);}
+  .cl-note{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
+  .required-tag{font-size:10px;font-weight:600;color:#b0724a;letter-spacing:0.5px;margin-bottom:3px;}
+  .info-panel{background:var(--surface2);border-radius:var(--radius);padding:16px;border:1px solid var(--border);}
+  .info-panel-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+  .info-panel p{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:4px;}
+  .alert{border-radius:8px;padding:12px 14px;font-size:13px;margin-bottom:10px;line-height:1.5;}
+  .alert-warn{background:#fdf8f0;border:1px solid #e8d5a8;color:var(--warn);}
+  .alert-info{background:#f0f5f9;border:1px solid #c5d8e8;color:var(--accent);}
+  .alert-danger{background:#fdf0f0;border:1px solid #e8c0c0;color:var(--danger);}
+  .footer{text-align:center;padding:20px 16px 12px;border-top:1px solid var(--border);margin-top:16px;}
+  .footer-dev{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;}
+  .footer-ver{font-size:10px;color:var(--text3);margin-top:3px;}
+  .footer-disc{font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6;}
+  .empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:14px;line-height:1.7;}
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#141820;--surface:#1e2330;--surface2:#252b3a;--border:#2e3548;--accent:#4a7fa5;--accent2:#6aa0c0;--text:#e8eaf0;--text2:#a0a8bc;--text3:#606880;--ok:#4a9a6e;}
+    .nhi-special{background:#1e2c38;}.nhi-warn{background:#2a2318;}
+    input[type="number"]{color:var(--text);}.detail-target{background:rgba(255,255,255,0.1);}
+    .rec-target{background:#1e2c38;}.tag-age{background:#2a2010;border-color:#5a4020;color:#c0901a;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Taiwan NHI · Severe Asthma</div>
+  <div class="header-title">氣喘生物製劑輔助系統</div>
+  <div class="header-sub">Biologic Advisor · 依健保給付規定 &amp; 2025 GINA</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('input')">病人資料</button>
+  <button class="tab" onclick="switchTab('result')">推薦結果</button>
+  <button class="tab" onclick="switchTab('reference')">藥物說明</button>
+  <button class="tab" onclick="switchTab('checklist')">健保申請</button>
+</div>
+
+<!-- ══ INPUT ══ -->
+<div id="tab-input" class="content">
+  <div class="card" style="background:#f0f5f9;border:1px solid #c5d8e8;">
+    <div style="font-size:11px;font-weight:600;color:var(--accent);letter-spacing:1px;margin-bottom:8px;">年齡限制提醒</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+      Omalizumab / Dupilumab：<strong>≥12 歲</strong><br>
+      Mepolizumab / Benralizumab / Tezepelumab：<strong style="color:var(--warn);">≥18 歲</strong>（台灣健保規定）
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">基本資料</div>
+    <div class="form-group">
+      <div class="form-label">病人年齡（歲）</div>
+      <input type="number" id="f-age" placeholder="e.g. 45">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">生物標記 Biomarkers</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <div class="form-label">Total IgE (IU/mL)</div>
+        <input type="number" id="f-IgE" placeholder="e.g. 350">
+        <div class="form-hint">Omalizumab 需 30–1300</div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">BEC (cells/μL)</div>
+        <input type="number" id="f-eos" placeholder="e.g. 450">
+        <div class="form-hint">嗜酸性球<br>Mepo/Benra/Dupilumab 需 ≥300</div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">FeNO (ppb)</div>
+        <input type="number" id="f-FeNO" placeholder="e.g. 35">
+        <div class="form-hint">≥25 ppb 為 T2-high 指標</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">急性惡化紀錄（過去 12 個月）</div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <div class="form-label">惡化次數（需使用全身性類固醇）</div>
+      <input type="number" id="f-exac" placeholder="e.g. 3">
+      <div class="form-hint">Mepo / Benra / Dupilumab / Tezepelumab 需 ≥2 次</div>
+    </div>
+    <div class="check-row" onclick="toggle('f-er')">
+      <div class="check-box" id="f-er-box"></div>
+      <div class="check-label">至少 1 次因急性惡化需急診或住院<br><span style="font-size:11px;color:var(--text3);">（不需兩次均急診）</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">口服類固醇 OCS 使用情形</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <div class="form-label">持續使用月數</div>
+        <input type="number" id="f-ocs-mo" placeholder="e.g. 6">
+        <div class="form-hint">Mepo/Benra：≥6 個月<br>Dupilumab ≥18歲：≥6個月<br>Dupilumab 12–17歲：≥1–3個月<br>Tezepelumab：不需 OCS</div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">每日劑量 (mg)</div>
+        <input type="number" id="f-ocs-dose" placeholder="e.g. 10">
+        <div class="form-hint">Prednisolone 等效<br>需 ≥5 mg/天<br>（或累積 ≥900 mg）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">共病症（可複選）</div>
+    <div class="chip-group">
+      <div class="chip" data-val="CRSwNP" onclick="toggleChip(this)">CRSwNP 鼻息肉</div>
+      <div class="chip" data-val="AD" onclick="toggleChip(this)">異位性皮膚炎</div>
+      <div class="chip" data-val="AR" onclick="toggleChip(this)">過敏性鼻炎</div>
+      <div class="chip" data-val="EoE" onclick="toggleChip(this)">EoE 嗜酸性食道炎</div>
+      <div class="chip" data-val="HES" onclick="toggleChip(this)">HES 高嗜酸血症</div>
+      <div class="chip" data-val="EGPA" onclick="toggleChip(this)">EGPA</div>
+      <div class="chip" data-val="Pregnant" onclick="toggleChip(this)">懷孕中</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">吸菸狀態</div>
+    <div class="chip-group">
+      <div class="chip active" data-smoke="no" onclick="selectSmoke(this)">非吸菸者</div>
+      <div class="chip" data-smoke="quit" onclick="selectSmoke(this)">已戒菸 / 積極戒菸</div>
+      <div class="chip" data-smoke="current" onclick="selectSmoke(this)">目前吸菸</div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;">已戒菸或積極戒菸者，戒菸成功與否不影響申請資格</div>
+  </div>
+
+  <button class="btn-primary" onclick="analyze()">分析並推薦生物製劑</button>
+  <div style="padding-bottom:8px;"></div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div id="tab-result" class="content" style="display:none">
+  <div id="result-content"><div class="empty">請先填寫病人資料並按下「分析」按鈕</div></div>
+</div>
+
+<!-- ══ REFERENCE ══ -->
+<div id="tab-reference" class="content" style="display:none">
+  <div class="ref-nav" id="ref-nav">
+    <button class="ref-btn active" onclick="selectRef('omalizumab',this)">Omalizumab</button>
+    <button class="ref-btn" onclick="selectRef('mepolizumab',this)">Mepolizumab</button>
+    <button class="ref-btn" onclick="selectRef('benralizumab',this)">Benralizumab</button>
+    <button class="ref-btn" onclick="selectRef('dupilumab',this)">Dupilumab</button>
+    <button class="ref-btn" onclick="selectRef('tezepelumab',this)">Tezepelumab</button>
+  </div>
+  <div id="ref-content"></div>
+</div>
+
+<!-- ══ CHECKLIST ══ -->
+<div id="tab-checklist" class="content" style="display:none">
+  <div class="ref-nav" id="cl-nav">
+    <button class="ref-btn active" onclick="selectCL('omalizumab',this)">Omalizumab</button>
+    <button class="ref-btn" onclick="selectCL('mepolizumab',this)">Mepolizumab</button>
+    <button class="ref-btn" onclick="selectCL('benralizumab',this)">Benralizumab</button>
+    <button class="ref-btn" onclick="selectCL('dupilumab',this)">Dupilumab</button>
+    <button class="ref-btn" onclick="selectCL('tezepelumab',this)">Tezepelumab</button>
+  </div>
+  <div id="cl-content"></div>
+</div>
+
+<script>
+const S={checks:{},chips:[],smoke:'no',submitted:false,refDrug:'omalizumab',clDrug:'omalizumab',clChecked:{}};
+
+const BIO={
+  omalizumab:{
+    generic:'Omalizumab',brand:'Xolair® (Novartis)',target:'Anti-IgE',ageMin:12,ageLabel:'≥12 歲',
+    mechanism:'與游離 IgE 結合，阻止其與肥大細胞及嗜鹼性球上的高親和力受體 (FcεRI) 結合，阻斷 IgE 媒介的過敏性發炎路徑，降低氣道過敏反應及肥大細胞活化。',
+    schedule:'每 2 或 4 週皮下注射一次（依體重及 IgE 劑量表）',
+    scheduleDetail:'劑量：75–600 mg / 次，依 IgE（IU/mL）與體重（kg）查劑量表決定。每月不超過 2 次。',
+    renewalEval:'使用 16 週後評估：症狀確實改善，方可繼續使用',
+    biomarkers:[['Total IgE','30–1300 IU/mL（用抗 IgE 後降低者不在此限）'],['BEC','不限'],['FeNO','參考用']],
+    nhi:[
+      {t:'base',text:'年齡 ≥12 歲'},
+      {t:'base',text:'胸腔內科 / 小兒科 / 過敏免疫專科醫師診斷為重度持續性氣喘'},
+      {t:'base',text:'非抽菸或正積極戒菸'},
+      {t:'req', text:'臨床病史顯示對過敏原過敏，或 skin prick test / 體外 IgE 試驗陽性（病歷記載過敏史亦符合）'},
+      {t:'req', text:'Total IgE：30–1300 IU/mL（使用抗 IgE 製劑後 IgE 降低者不在此限）'},
+      {t:'req', text:'高劑量 ICS + 其他治療（LABA / OCS / theophylline / LTRA）仍控制不良，且過去四週氣喘控制不穩定（≥2 項：日間症狀 >2次/週、活動受限、夜間症狀、需緩解藥 >2次/週）'},
+      {t:'ok',  text:'不需要 OCS 使用條件'},
+      {t:'ok',  text:'不需要急性惡化次數條件'},
+      {t:'ok',  text:'懷孕期間唯一建議可考慮使用的生物製劑'},
+    ],
+    note:'Omalizumab 申請條件最寬鬆，IgE 符合範圍即可申請，不需 OCS 或惡化紀錄。使用 16 週後需評估症狀改善。',
+    schedWks:[1,3,5,7,9,11,13],schedFilled:[0,1,2,3,4,5,6],
+  },
+  mepolizumab:{
+    generic:'Mepolizumab',brand:'Nucala® (GSK)',target:'Anti-IL-5',ageMin:18,ageLabel:'≥18 歲（健保）',
+    mechanism:'人類化單株抗體，與 IL-5 結合，阻斷 IL-5 與嗜酸性球受體的交互作用，抑制嗜酸性球增生、活化與存活，降低嗜酸性氣道發炎。亦核准用於 EGPA 及 HES。',
+    schedule:'每 4 週皮下注射一次，100 mg（成人）',
+    scheduleDetail:'成人 100 mg SC q4w。注意：台灣健保規定 ≥18 歲（GINA 核准 ≥12 歲，但健保條文明訂為 18 歲以上成人）。',
+    renewalEval:'使用 4–6 個月後評估：急性發作減少、症狀控制、肺功能或用藥減少任一項即可',
+    biomarkers:[['Total IgE','不限'],['BEC','≥300 cells/μL（12個月內，可提供最高值）'],['FeNO','參考用，高者療效佳']],
+    nhi:[
+      {t:'warn',text:'健保規定年齡：18 歲以上成人（台灣健保條文）'},
+      {t:'base',text:'胸腔專科或過敏免疫專科醫師診斷：嗜酸性白血球重度氣喘且控制不良'},
+      {t:'req', text:'BEC ≥300 cells/μL（12 個月內；可提供最高值佐證；超過 12 個月的歷史紀錄亦可佐證；OCS 使用後下降者可提供治療前紀錄）'},
+      {t:'req', text:'過去 6 個月持續使用 OCS prednisolone ≥5 mg/天（或等價累積劑量 ≥900 mg，不強制每日持續）'},
+      {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
+      {t:'req', text:'至少 1 次急性惡化需急診或住院（不需兩次均急診）'},
+      {t:'base',text:'已遵循最適切標準療法（Step 5：高劑量 ICS + LABA ± LAMA）'},
+      {t:'ok',  text:'特殊個案：BEC 未達 300 但 OCS 副作用嚴重，建議申請呼吸道專家審查'},
+    ],
+    note:'BEC、OCS、急性惡化三項需同時符合。OCS 可採累積等效劑量計算。BEC 歷史最高值（即使超過 12 個月）可作佐證。',
+    schedWks:[1,5,9,13,17,21,25],schedFilled:[0,1,2,3,4,5,6],
+  },
+  benralizumab:{
+    generic:'Benralizumab',brand:'Fasenra® (AstraZeneca)',target:'Anti-IL-5Rα',ageMin:18,ageLabel:'≥18 歲（健保）',
+    mechanism:'與嗜酸性球及嗜鹼性球上的 IL-5Rα 受體結合，透過 ADCC 機制直接誘導嗜酸性球凋亡，可快速且完全清除血中嗜酸性球，是目前清除嗜酸性球最直接的藥物。',
+    schedule:'誘導期：30 mg SC Q4W × 3 劑，維持期：Q8W',
+    scheduleDetail:'第 0、4、8 週各注射一次（誘導期），之後每 8 週一次（維持期）。台灣健保規定 ≥18 歲。',
+    renewalEval:'使用 4–6 個月後評估；維持期 Q8W 為嗜酸性氣喘中注射頻率最低',
+    biomarkers:[['Total IgE','不限'],['BEC','≥300 cells/μL（12個月內）'],['FeNO','參考用']],
+    nhi:[
+      {t:'warn',text:'健保規定年齡：18 歲以上成人（台灣健保條文）'},
+      {t:'base',text:'胸腔專科或過敏免疫專科醫師診斷：嗜酸性白血球重度氣喘且控制不良'},
+      {t:'req', text:'BEC ≥300 cells/μL（12 個月內；可提供最高值；超過 12 個月歷史紀錄亦可佐證）'},
+      {t:'req', text:'過去 6 個月持續使用 OCS prednisolone ≥5 mg/天（或等價累積劑量 ≥900 mg）'},
+      {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
+      {t:'req', text:'至少 1 次急性惡化需急診或住院'},
+      {t:'base',text:'已遵循最適切標準療法（Step 5）'},
+      {t:'ok',  text:'維持期 Q8W，注射頻率為嗜酸性氣喘中最低'},
+      {t:'ok',  text:'對一種抗 IL-5/5R 無反應，不排除對另一種有反應，可相互轉換'},
+    ],
+    note:'條件與 Mepolizumab 相同。維持期每 8 週一次，適合不便頻繁回診者。兩種抗 IL-5 藥物可相互轉換嘗試。',
+    schedWks:[1,5,9,17,25,33,41],schedFilled:[0,1,2],schedLight:[3,4,5,6],
+  },
+  dupilumab:{
+    generic:'Dupilumab',brand:'Dupixent® (Sanofi/Regeneron)',target:'Anti-IL-4Rα',ageMin:12,ageLabel:'≥12 歲',
+    mechanism:'阻斷 IL-4Rα 受體，同時抑制 IL-4 與 IL-13 訊號路徑，降低 IgE 生成、嗜酸性球活化與黏液分泌。同時對 CRSwNP、異位性皮膚炎、EoE 均有療效，是多重 T2 共病的首選藥物。',
+    schedule:'每 2 週皮下注射一次（劑量依 OCS 依賴性及共病分層）',
+    scheduleDetail:'OCS 依賴型 / 合併 AD / 合併 CRSwNP：起始 600 mg（300 mg × 2），之後 300 mg q2w。其他病人：起始 400 mg（200 mg × 2），之後 200 mg q2w。',
+    renewalEval:'使用 32 週後評估：與使用前比較惡化情形是否減少，方可繼續使用',
+    biomarkers:[['Total IgE','不限（可偏高）'],['BEC','≥300 cells/μL（12個月內）'],['FeNO','≥25 ppb 效果更佳']],
+    nhi:[
+      {t:'base',text:'年齡 ≥12 歲（胸腔 / 過敏免疫 / 兒科專科醫師診斷）'},
+      {t:'req', text:'嗜酸性白血球表現型嚴重氣喘且控制不良（severe refractory eosinophilic asthma）'},
+      {t:'req', text:'BEC ≥300 cells/μL（投藥前 12 個月內）'},
+      {t:'req', text:'已使用最適切的標準療法（Step 5）'},
+      {t:'req', text:'OCS 條件（年齡分層）：\n18 歲以上→ 過去 6 個月持續使用 ≥5 mg/天\n12–17 歲→ 過去 1–3 個月持續使用 ≥5 mg/天\n（均可採等價當量計算）'},
+      {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
+      {t:'req', text:'至少 1 次急性惡化需急診或住院'},
+      {t:'ok',  text:'合併 CRSwNP / 異位性皮膚炎 / EoE 時優先考慮，且使用較高劑量（300 mg q2w）'},
+      {t:'ok',  text:'青少年（12–17 歲）OCS 條件較寬鬆（1–3 個月即可）'},
+    ],
+    note:'唯一有 OCS 年齡分層條件的藥物。使用 32 週後評估惡化情形。OCS 依賴型或合併 AD/CRSwNP 者使用較高起始劑量（600 mg）及維持劑量（300 mg q2w）。',
+    schedWks:[1,3,5,7,9,11,13],schedFilled:[0,1,2,3,4,5,6],
+  },
+  tezepelumab:{
+    generic:'Tezepelumab',brand:'Tezspire® (AstraZeneca/Amgen)',target:'Anti-TSLP',ageMin:18,ageLabel:'≥18 歲（健保）',
+    mechanism:'與上皮來源的 alarmin TSLP 結合，阻斷 TSLP 啟動的廣泛性發炎路徑（含 T2 及 non-T2），作用位置最上游。不限氣喘表型均可使用，是目前適應症最廣的氣喘生物製劑。',
+    schedule:'每 4 週皮下注射一次，固定劑量 210 mg',
+    scheduleDetail:'210 mg SC q4w，固定劑量不需依體重調整。台灣健保規定 ≥18 歲（GINA 核准 ≥12 歲）。收載日期：113/6/1。',
+    renewalEval:'使用 4–6 個月後評估：急性發作減少、症狀控制、肺功能或用藥減少任一項即可',
+    biomarkers:[['Total IgE','不限'],['BEC','不限（T2-low 亦可申請）'],['FeNO','不限']],
+    nhi:[
+      {t:'warn',text:'健保規定年齡：18 歲以上成人（收載日：113/6/1）'},
+      {t:'base',text:'胸腔專科或過敏免疫專科醫師診斷：嚴重氣喘且控制不良'},
+      {t:'base',text:'已遵循最適切標準療法（Step 5：高劑量 ICS + LABA ± LAMA）'},
+      {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
+      {t:'req', text:'至少 1 次急性惡化需急診或住院'},
+      {t:'ok',  text:'不需要 BEC ≥300 條件'},
+      {t:'ok',  text:'不需要 OCS 使用條件'},
+      {t:'ok',  text:'T2-low 或生物標記不明確的難治性氣喘之首選'},
+    ],
+    note:'台灣最新收載（113/6/1）。為台灣健保中唯一不需 BEC 且不需 OCS 條件的廣效型生物製劑，僅需 ≥2 次急性惡化及 ≥1 次急診/住院即可申請。',
+    schedWks:[1,5,9,13,17,21,25],schedFilled:[0,1,2,3,4,5,6],
+  },
+};
+
+const CL={
+  omalizumab:[
+    {req:true, label:'年齡 ≥12 歲確認', note:''},
+    {req:true, label:'胸腔內科 / 小兒科 / 過敏免疫專科醫師診斷（重度持續性氣喘）', note:''},
+    {req:false,label:'非抽菸或正積極戒菸（病歷記載）', note:'已戒菸或積極戒菸者，戒菸成功與否不影響申請'},
+    {req:true, label:'肺功能 (PFT) 檢查報告', note:'FEV1 reversibility <12% 不強制；病歷記載氣喘史亦可'},
+    {req:true, label:'Total IgE 檢驗結果：30–1300 IU/mL', note:'使用抗 IgE 製劑後 IgE 降低者不在此限'},
+    {req:true, label:'過敏原敏感紀錄', note:'skin prick test、體外 IgE (CAP/RAST 等)，或病歷記載過敏史均可'},
+    {req:false,label:'體重（公斤）— 用於劑量計算', note:'依 IgE 與體重查劑量表（75–600 mg/次）'},
+    {req:true, label:'高劑量 ICS + 其他治療用藥紀錄', note:'LABA / OCS / theophylline / LTRA'},
+    {req:true, label:'過去四週氣喘控制不穩定紀錄（≥2 項症狀）', note:'日間症狀 >2次/週、活動受限、夜間症狀、需緩解藥 >2次/週'},
+    {req:false,label:'16 週後評估計畫（病歷記載）', note:'16 週評估症狀確實改善，方可繼續使用'},
+  ],
+  mepolizumab:[
+    {req:true, label:'年齡 ≥18 歲確認（健保規定）', note:'GINA 核准 ≥12 歲，但台灣健保條文為 18 歲以上成人'},
+    {req:true, label:'胸腔專科或過敏免疫專科醫師診斷（嗜酸性重度氣喘）', note:''},
+    {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
+    {req:true, label:'肺功能 (PFT) 檢查報告', note:'FEV1 reversibility <12% 不強制'},
+    {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'提供最高值佐證；超過 12 個月的歷史紀錄亦可佐證；OCS 後下降者可提供治療前紀錄'},
+    {req:true, label:'OCS 使用紀錄：過去 6 個月，≥5 mg/天 prednisolone', note:'可採累積等效劑量計算（≥900 mg）；不強制每日持續服用'},
+    {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
+    {req:true, label:'至少 1 次急診或住院紀錄', note:'不需兩次均急診'},
+    {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
+  ],
+  benralizumab:[
+    {req:true, label:'年齡 ≥18 歲確認（健保規定）', note:''},
+    {req:true, label:'胸腔專科或過敏免疫專科醫師診斷（嗜酸性重度氣喘）', note:''},
+    {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
+    {req:true, label:'肺功能 (PFT) 檢查報告', note:''},
+    {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'提供最高值；超過 12 個月的歷史紀錄亦可佐證'},
+    {req:true, label:'OCS 使用紀錄：過去 6 個月，≥5 mg/天 prednisolone', note:'可採累積等效劑量計算（≥900 mg）'},
+    {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
+    {req:true, label:'至少 1 次急診或住院紀錄', note:''},
+    {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
+    {req:false,label:'注射排程說明（誘導期 Q4W × 3，之後維持期 Q8W）', note:'可於病歷記載注射時程'},
+  ],
+  dupilumab:[
+    {req:true, label:'年齡 ≥12 歲確認', note:''},
+    {req:true, label:'胸腔 / 過敏免疫 / 兒科專科醫師診斷（嗜酸性重度氣喘）', note:''},
+    {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
+    {req:true, label:'肺功能 (PFT) 檢查報告', note:''},
+    {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'FeNO ≥25 ppb 可作輔助佐證'},
+    {req:true, label:'OCS 使用紀錄（依年齡分層）', note:'18歲以上→過去6個月 ≥5mg/天｜12–17歲→過去1–3個月 ≥5mg/天（或等價當量）'},
+    {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
+    {req:true, label:'至少 1 次急診或住院紀錄', note:''},
+    {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
+    {req:true, label:'確認使用劑量分層', note:'OCS依賴 / 合併AD / 合併CRSwNP → 300 mg q2w（起始600mg×1）｜其他 → 200 mg q2w（起始400mg×1）'},
+    {req:false,label:'32 週後評估計畫（病歷記載）', note:'32 週評估惡化情形是否減少，方可繼續使用'},
+    {req:false,label:'（加分）合併 CRSwNP / 異位性皮膚炎 / EoE 診斷記錄', note:'共病症記錄可強化申請理由'},
+  ],
+  tezepelumab:[
+    {req:true, label:'年齡 ≥18 歲確認（健保規定）', note:'GINA 核准 ≥12 歲，但台灣健保條文為 18 歲以上'},
+    {req:true, label:'胸腔專科或過敏免疫專科醫師診斷（嚴重氣喘）', note:''},
+    {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
+    {req:true, label:'肺功能 (PFT) 檢查報告', note:''},
+    {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:'不需 BEC ≥300 條件，不限表型'},
+    {req:true, label:'至少 1 次急診或住院紀錄', note:''},
+    {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄（最適切標準療法）', note:''},
+    {req:false,label:'不需 OCS 使用條件', note:'Tezepelumab 為台灣唯一廣效型，不需 OCS 紀錄'},
+    {req:false,label:'不需 BEC ≥300 條件', note:'T2-low 患者亦可申請'},
+  ],
+};
+
+// ── HELPERS ───────────────────────────────────────────────
+function toggle(id){
+  S.checks[id]=!S.checks[id];
+  const b=document.getElementById(id+'-box');
+  if(b) b.className='check-box'+(S.checks[id]?' checked':'');
+}
+function toggleChip(el){
+  const v=el.dataset.val;
+  if(S.chips.includes(v)){S.chips=S.chips.filter(x=>x!==v);el.classList.remove('active');}
+  else{S.chips.push(v);el.classList.add('active');}
+}
+function selectSmoke(el){
+  document.querySelectorAll('[data-smoke]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');S.smoke=el.dataset.smoke;
+}
+function switchTab(name){
+  ['input','result','reference','checklist'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['input','result','reference','checklist'][i]===name);
+  });
+  if(name==='reference') renderRef(S.refDrug);
+  if(name==='checklist') renderCL(S.clDrug);
+}
+function dots(b){
+  return b.schedWks.map((w,i)=>{
+    let c='dot';
+    if(b.schedFilled&&b.schedFilled.includes(i)) c+=' filled';
+    else if(b.schedLight&&b.schedLight.includes(i)) c+=' light';
+    return `<div class="${c}">W${w}</div>`;
+  }).join('')+'<div style="font-size:10px;color:var(--text3);align-self:center;padding-left:2px;">...</div>';
+}
+function getPhenotype(IgE,eos,FeNO){
+  const al=IgE>=30&&IgE<=1300,eo=eos>=300,fn=FeNO>=25;
+  if(al&&eo) return 'Allergic + Eosinophilic T2-high';
+  if(al&&!eo) return 'Allergic T2-high（IgE-driven）';
+  if(!al&&eo) return 'Eosinophilic T2-high（非過敏性）';
+  if(fn) return 'T2-high（FeNO elevated）';
+  return 'T2-low / Biomarker-low（難以分型）';
+}
+function getRecs(age,IgE,eos,FeNO,exac,er,ocsM,comorbidity){
+  const recs=[], pr=comorbidity.includes('Pregnant');
+  if(age>=12&&IgE>=30&&IgE<=1300){
+    recs.push({key:'omalizumab',score:pr?4:(IgE>=100?3:2),note:pr?'懷孕中首選，唯一建議的生物製劑':'過敏性氣喘首選，IgE 符合範圍，不需 OCS 或惡化次數條件'});
+  }
+  if(age>=18&&eos>=300&&exac>=2&&er&&ocsM>=6){
+    recs.push({key:'mepolizumab',score:eos>=500?3:2,note:'嗜酸性球符合，抑制 IL-5 路徑'});
+    recs.push({key:'benralizumab',score:eos>=500?3:2,note:'直接清除嗜酸性球；維持期 Q8W，注射頻率最低'});
+  }
+  const dupiOk=(age>=18&&ocsM>=6)||(age>=12&&age<18&&ocsM>=1);
+  if(age>=12&&eos>=300&&exac>=2&&er&&dupiOk){
+    let sc=2;
+    if(FeNO>=25) sc++;
+    if(comorbidity.includes('CRSwNP')||comorbidity.includes('AD')||comorbidity.includes('EoE')) sc++;
+    const ex=[comorbidity.includes('CRSwNP')?'CRSwNP':'',comorbidity.includes('AD')?'異位性皮膚炎':'',comorbidity.includes('EoE')?'EoE':''].filter(Boolean);
+    recs.push({key:'dupilumab',score:sc,note:'抑制 IL-4 / IL-13'+(ex.length?'，同時改善 '+ex.join(' / '):'')+(age<18?' ｜青少年 OCS 條件較寬（1–3 個月）':'')});
+  }
+  if(age>=18&&exac>=2&&er){
+    const sc=(eos<300&&IgE<30)?3:1;
+    recs.push({key:'tezepelumab',score:sc,note:eos<300?'T2-low 首選，不需 BEC 或 OCS 條件，廣效型':'廣效型，不限表型，不需 OCS 條件'});
+  }
+  const seen={};
+  return recs.filter(r=>{if(seen[r.key])return false;seen[r.key]=true;return true;}).sort((a,b)=>b.score-a.score);
+}
+
+function analyze(){
+  const age=parseFloat(document.getElementById('f-age').value)||0;
+  const IgE=parseFloat(document.getElementById('f-IgE').value)||0;
+  const eos=parseFloat(document.getElementById('f-eos').value)||0;
+  const FeNO=parseFloat(document.getElementById('f-FeNO').value)||0;
+  const exac=parseFloat(document.getElementById('f-exac').value)||0;
+  const ocsM=parseFloat(document.getElementById('f-ocs-mo').value)||0;
+  const er=!!S.checks['f-er'];
+  const comorbidity=[...S.chips];
+  S.submitted=true;
+
+  const phenotype=getPhenotype(IgE,eos,FeNO);
+  const recs=getRecs(age,IgE,eos,FeNO,exac,er,ocsM,comorbidity);
+  let html='';
+
+  if(age>0&&age<12){
+    html+=`<div class="alert alert-danger">年齡 ${age} 歲：目前台灣健保規定所有氣喘生物製劑均需 ≥12 歲（Omalizumab/Dupilumab）或 ≥18 歲（其餘三種）。</div>`;
+  } else if(age>=12&&age<18){
+    html+=`<div class="alert alert-warn">年齡 ${age} 歲（青少年）：Mepolizumab、Benralizumab、Tezepelumab 健保規定需 ≥18 歲，暫不適用。Omalizumab 及 Dupilumab（OCS 條件僅需 1–3 個月）可申請。</div>`;
+  }
+
+  html+=`<div class="phenotype-card">
+    <div class="phenotype-label-sm">PHENOTYPE 判斷</div>
+    <div class="phenotype-value">${phenotype}</div>
+    <div class="biomarker-row">
+      <div class="biomarker-item"><div class="biomarker-val">${IgE||'—'}</div><div class="biomarker-key">IgE</div><div class="biomarker-unit">IU/mL</div></div>
+      <div class="biomarker-item"><div class="biomarker-val">${eos||'—'}</div><div class="biomarker-key">BEC</div><div class="biomarker-unit">cells/μL</div></div>
+      <div class="biomarker-item"><div class="biomarker-val">${FeNO||'—'}</div><div class="biomarker-key">FeNO</div><div class="biomarker-unit">ppb</div></div>
+      ${age?`<div class="biomarker-item"><div class="biomarker-val">${age}</div><div class="biomarker-key">年齡</div><div class="biomarker-unit">歲</div></div>`:''}
+    </div>
+  </div>`;
+
+  if(S.smoke==='current') html+=`<div class="alert alert-warn">目前吸菸者原則上不符合健保給付條件，需積極戒菸後方可申請。</div>`;
+
+  if(recs.length===0){
+    html+=`<div class="card" style="text-align:center;padding:28px 16px;color:var(--text3);">
+      根據目前資料尚無符合健保條件的建議。<br><br>
+      <div style="text-align:left;font-size:12px;line-height:1.8;">
+        常見原因：<br>
+        · 年齡未達條件（Mepo/Benra/Teze 需 ≥18 歲）<br>
+        · 急性惡化次數不足（需 ≥2 次 + ≥1 次急診/住院）<br>
+        · BEC &lt;300 且 IgE &lt;30（→ 考慮 Tezepelumab，但需 ≥18 歲）<br>
+        · OCS 使用月數不足（Mepo/Benra/Dupilumab ≥18 歲需 ≥6 個月）
+      </div>
+    </div>`;
+  }
+
+  recs.forEach((r,idx)=>{
+    const b=BIO[r.key];
+    html+=`<div class="rec-card${idx===0?' top':''}">
+      ${idx===0?'<div class="rec-badge">首選推薦</div>':''}
+      <div class="rec-drug">${b.generic}<span class="tag-age">${b.ageLabel}</span></div>
+      <div class="rec-brand">${b.brand}</div>
+      <div class="rec-target">${b.target}</div>
+      <div class="rec-note">${r.note}</div>
+      <div class="rec-schedule">${b.schedule}</div>
+      <div class="schedule-dots">${dots(b)}</div>
+      ${b.schedLight?'<div style="font-size:11px;color:var(--text3);margin-top:4px;">灰色=維持期 Q8W，深色=誘導期 Q4W</div>':''}
+      <div class="renew-box">续用評估：${b.renewalEval}</div>
+      <button class="rec-link" onclick="selectRef('${r.key}');switchTab('reference');">查看完整藥物說明</button>
+    </div>`;
+  });
+
+  html+=`<div class="alert alert-info" style="margin-top:4px;">生物製劑轉換：4–6 個月後控制仍不佳可轉換，無需 washout period。懷孕期間建議轉換至 Omalizumab。</div>`;
+  document.getElementById('result-content').innerHTML=html;
+  switchTab('result');
+}
+
+function selectRef(key,btn){
+  S.refDrug=key;
+  if(btn){document.querySelectorAll('#ref-nav .ref-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  renderRef(key);
+}
+function renderRef(key){
+  const b=BIO[key];if(!b)return;
+  let html=`<div class="detail-header">
+    <div class="detail-drug">${b.generic}</div>
+    <div class="detail-brand">${b.brand} &nbsp;|&nbsp; 健保年齡：${b.ageLabel}</div>
+    <div class="detail-target">${b.target}</div>
+  </div>
+  <div class="card"><div class="card-title">作用機轉</div><p style="font-size:14px;color:var(--text2);line-height:1.75;">${b.mechanism}</p></div>
+  <div class="card">
+    <div class="card-title">注射排程</div>
+    <div style="font-size:15px;font-weight:600;color:var(--accent);margin-bottom:4px;">${b.schedule}</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">${b.scheduleDetail}</div>
+    <div class="schedule-dots">${dots(b)}</div>
+    ${b.schedLight?'<div style="font-size:11px;color:var(--text3);margin-top:6px;">灰色=維持期 Q8W，深色=誘導期 Q4W（前3劑）</div>':''}
+    <div class="renew-box" style="margin-top:10px;">${b.renewalEval}</div>
+  </div>
+  <div class="card"><div class="card-title">Biomarker 參考值</div>
+    ${b.biomarkers.map(([k,v])=>`<div class="info-row"><div class="info-key">${k}</div><div class="info-val">${v}</div></div>`).join('')}
+  </div>
+  <div class="card"><div class="card-title">台灣健保給付條件</div>
+    ${b.nhi.map(item=>{
+      if(item.t==='req') return `<div class="nhi-item"><div class="nhi-dot"></div><div>${item.text.replace(/\n/g,'<br>')}</div></div>`;
+      if(item.t==='ok')  return `<div class="nhi-special">${item.text}</div>`;
+      if(item.t==='warn')return `<div class="nhi-warn">${item.text}</div>`;
+      return `<div class="nhi-item" style="opacity:0.7"><div class="nhi-dot" style="background:var(--text3)"></div><div>${item.text}</div></div>`;
+    }).join('')}
+    <div class="note-box">${b.note}</div>
+  </div>`;
+  document.getElementById('ref-content').innerHTML=html;
+}
+
+function selectCL(key,btn){
+  S.clDrug=key;
+  if(btn){btn.parentElement.querySelectorAll('.ref-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  renderCL(key);
+}
+function renderCL(key){
+  if(!S.clChecked[key]) S.clChecked[key]={};
+  const b=BIO[key],items=CL[key]||[];
+  const done=items.filter((_,i)=>S.clChecked[key][i]).length;
+  const pct=items.length?Math.round(done/items.length*100):0;
+  let html=`<div class="cl-header">
+    <div class="cl-title">${b.generic} 健保申請</div>
+    <div class="cl-sub">${b.brand} · ${b.ageLabel}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label">${done} / ${items.length} 項已完成</div>
+  </div>
+  <div style="font-size:11px;color:var(--warn);font-weight:600;margin-bottom:8px;padding:0 2px;">橙色左框 = 必填項目</div>`;
+  items.forEach((item,i)=>{
+    const checked=!!S.clChecked[key][i];
+    html+=`<div class="cl-item${item.req?' required':''}${checked?' done':''}" onclick="toggleCL('${key}',${i})">
+      <div class="cl-check${checked?' checked':''}"></div>
+      <div class="cl-text">
+        ${item.req?'<div class="required-tag">必填</div>':''}
+        <div class="cl-label${checked?' done-text':''}">${item.label}</div>
+        ${item.note?`<div class="cl-note">${item.note}</div>`:''}
+      </div>
+    </div>`;
+  });
+  html+=`<div class="info-panel" style="margin-top:4px;">
+    <div class="info-panel-title">申請 / 续用注意事項</div>
+    <p>续用：急性發作減少、症狀控制、肺功能穩定或用藥減少，任一項即可。</p>
+    <p>長期穩定使用者，不需重新提供首次申請條件（BEC / OCS / IgE）。</p>
+    <p>轉換：無需 washout period；懷孕期間建議轉換至 Omalizumab。</p>
+    <p>特殊個案（BEC 不達標但 OCS 副作用嚴重）：建議申請呼吸道專家審查。</p>
+  </div>`;
+  document.getElementById('cl-content').innerHTML=html;
+}
+function toggleCL(key,i){
+  if(!S.clChecked[key]) S.clChecked[key]={};
+  S.clChecked[key][i]=!S.clChecked[key][i];
+  renderCL(key);
+}
+
+selectRef('omalizumab');
+renderCL('omalizumab');
+</script>
+
+<div class="footer">
+  <div class="footer-dev">Developer：林鎮均</div>
+  <div class="footer-ver">Version 1.0 &nbsp;·&nbsp; 2026.5.4</div>
+  <div class="footer-disc">本工具僅供臨床輔助參考，不取代醫師臨床判斷</div>
+</div>
+</body>
+</html>
