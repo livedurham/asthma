@@ -152,22 +152,20 @@
 
   <div class="card">
     <div class="card-title">生物標記 Biomarkers</div>
-    <div class="form-grid">
-      <div class="form-group">
-        <div class="form-label">Total IgE (IU/mL)</div>
-        <input type="number" id="f-IgE" placeholder="e.g. 350">
-        <div class="form-hint">Omalizumab 需 30–1300</div>
-      </div>
-      <div class="form-group">
-        <div class="form-label">BEC (cells/μL)</div>
-        <input type="number" id="f-eos" placeholder="e.g. 450">
-        <div class="form-hint">嗜酸性球<br>Mepo/Benra/Dupilumab 需 ≥300</div>
-      </div>
-      <div class="form-group">
-        <div class="form-label">FeNO (ppb)</div>
-        <input type="number" id="f-FeNO" placeholder="e.g. 35">
-        <div class="form-hint">≥25 ppb 為 T2-high 指標</div>
-      </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">Total IgE (IU/mL)</div>
+      <input type="number" id="f-IgE" placeholder="e.g. 350">
+      <div class="form-hint">Omalizumab 需 30–1300 IU/mL</div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">BEC — 血中嗜酸性球 (cells/μL)</div>
+      <input type="number" id="f-eos" placeholder="e.g. 450">
+      <div class="form-hint">Mepo / Benra / Dupilumab 需 ≥300</div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">FeNO (ppb)</div>
+      <input type="number" id="f-FeNO" placeholder="e.g. 35">
+      <div class="form-hint">≥25 ppb 為 T2-high 指標</div>
     </div>
   </div>
 
@@ -186,17 +184,15 @@
 
   <div class="card">
     <div class="card-title">口服類固醇 OCS 使用情形</div>
-    <div class="form-grid">
-      <div class="form-group">
-        <div class="form-label">持續使用月數</div>
-        <input type="number" id="f-ocs-mo" placeholder="e.g. 6">
-        <div class="form-hint">Mepo/Benra：≥6 個月<br>Dupilumab ≥18歲：≥6個月<br>Dupilumab 12–17歲：≥1–3個月<br>Tezepelumab：不需 OCS</div>
-      </div>
-      <div class="form-group">
-        <div class="form-label">每日劑量 (mg)</div>
-        <input type="number" id="f-ocs-dose" placeholder="e.g. 10">
-        <div class="form-hint">Prednisolone 等效<br>需 ≥5 mg/天<br>（或累積 ≥900 mg）</div>
-      </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">持續使用月數</div>
+      <input type="number" id="f-ocs-mo" placeholder="e.g. 6">
+      <div class="form-hint">Mepo / Benra：≥6 個月｜Dupilumab ≥18歲：≥6個月｜12–17歲：≥1–3個月｜Tezepelumab：不需 OCS</div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">每日劑量（mg，Prednisolone 等效）</div>
+      <input type="number" id="f-ocs-dose" placeholder="e.g. 10">
+      <div class="form-hint">需 ≥5 mg/天（或累積 ≥900 mg）</div>
     </div>
   </div>
 
