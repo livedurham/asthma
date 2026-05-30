@@ -186,13 +186,13 @@
     <div class="card-title">口服類固醇 OCS 使用情形</div>
     <div class="form-group" style="margin-bottom:14px;">
       <div class="form-label">持續使用月數</div>
-      <input type="number" id="f-ocs-mo" placeholder="e.g. 6">
-      <div class="form-hint">Mepo / Benra：≥6 個月｜Dupilumab ≥18歲：≥6個月｜12–17歲：≥1–3個月｜Tezepelumab：不需 OCS</div>
+      <input type="number" id="f-ocs-mo" placeholder="e.g. 3">
+      <div class="form-hint">Mepo / Benra / Dupilumab（≥18歲）：≥3 個月｜Dupilumab（12–17歲）：≥1–3 個月｜Tezepelumab：不需 OCS</div>
     </div>
     <div class="form-group">
       <div class="form-label">每日劑量（mg，Prednisolone 等效）</div>
       <input type="number" id="f-ocs-dose" placeholder="e.g. 10">
-      <div class="form-hint">需 ≥5 mg/天（或累積 ≥900 mg）</div>
+      <div class="form-hint">需 ≥5 mg/天</div>
     </div>
   </div>
 
@@ -289,13 +289,13 @@ const BIO={
       {t:'warn',text:'健保規定年齡：18 歲以上成人（台灣健保條文）'},
       {t:'base',text:'胸腔專科或過敏免疫專科醫師診斷：嗜酸性白血球重度氣喘且控制不良'},
       {t:'req', text:'BEC ≥300 cells/μL（12 個月內；可提供最高值佐證；超過 12 個月的歷史紀錄亦可佐證；OCS 使用後下降者可提供治療前紀錄）'},
-      {t:'req', text:'過去 6 個月持續使用 OCS prednisolone ≥5 mg/天（或等價累積劑量 ≥900 mg，不強制每日持續）'},
+      {t:'req', text:'過去 3 個月持續使用 OCS prednisolone ≥5 mg/天（或等價當量）'},
       {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
       {t:'req', text:'至少 1 次急性惡化需急診或住院（不需兩次均急診）'},
       {t:'base',text:'已遵循最適切標準療法（Step 5：高劑量 ICS + LABA ± LAMA）'},
       {t:'ok',  text:'特殊個案：BEC 未達 300 但 OCS 副作用嚴重，建議申請呼吸道專家審查'},
     ],
-    note:'BEC、OCS、急性惡化三項需同時符合。OCS 可採累積等效劑量計算。BEC 歷史最高值（即使超過 12 個月）可作佐證。',
+    note:'BEC、OCS、急性惡化三項需同時符合。OCS 持續使用過去 3 個月，每天至少 5 mg prednisolone 或等價當量。BEC 歷史最高值（即使超過 12 個月）可作佐證。',
     schedWks:[1,5,9,13,17,21,25],schedFilled:[0,1,2,3,4,5,6],
   },
   benralizumab:{
@@ -309,14 +309,14 @@ const BIO={
       {t:'warn',text:'健保規定年齡：18 歲以上成人（台灣健保條文）'},
       {t:'base',text:'胸腔專科或過敏免疫專科醫師診斷：嗜酸性白血球重度氣喘且控制不良'},
       {t:'req', text:'BEC ≥300 cells/μL（12 個月內；可提供最高值；超過 12 個月歷史紀錄亦可佐證）'},
-      {t:'req', text:'過去 6 個月持續使用 OCS prednisolone ≥5 mg/天（或等價累積劑量 ≥900 mg）'},
+      {t:'req', text:'過去 3 個月持續使用 OCS prednisolone ≥5 mg/天（或等價當量）'},
       {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
       {t:'req', text:'至少 1 次急性惡化需急診或住院'},
       {t:'base',text:'已遵循最適切標準療法（Step 5）'},
       {t:'ok',  text:'維持期 Q8W，注射頻率為嗜酸性氣喘中最低'},
       {t:'ok',  text:'對一種抗 IL-5/5R 無反應，不排除對另一種有反應，可相互轉換'},
     ],
-    note:'條件與 Mepolizumab 相同。維持期每 8 週一次，適合不便頻繁回診者。兩種抗 IL-5 藥物可相互轉換嘗試。',
+    note:'條件與 Mepolizumab 相同（OCS 過去 3 個月，≥5 mg/天）。維持期每 8 週一次，適合不便頻繁回診者。兩種抗 IL-5 藥物可相互轉換嘗試。',
     schedWks:[1,5,9,17,25,33,41],schedFilled:[0,1,2],schedLight:[3,4,5,6],
   },
   dupilumab:{
@@ -331,13 +331,13 @@ const BIO={
       {t:'req', text:'嗜酸性白血球表現型嚴重氣喘且控制不良（severe refractory eosinophilic asthma）'},
       {t:'req', text:'BEC ≥300 cells/μL（投藥前 12 個月內）'},
       {t:'req', text:'已使用最適切的標準療法（Step 5）'},
-      {t:'req', text:'OCS 條件（年齡分層）：\n18 歲以上→ 過去 6 個月持續使用 ≥5 mg/天\n12–17 歲→ 過去 1–3 個月持續使用 ≥5 mg/天\n（均可採等價當量計算）'},
+      {t:'req', text:'OCS 條件（年齡分層）：\n18 歲以上→ 過去 3 個月持續使用 ≥5 mg/天\n12–17 歲→ 過去 1–3 個月持續使用 ≥5 mg/天\n（均可採等價當量計算）'},
       {t:'req', text:'過去 12 個月 ≥2 次急性惡化，使用全身性類固醇'},
       {t:'req', text:'至少 1 次急性惡化需急診或住院'},
       {t:'ok',  text:'合併 CRSwNP / 異位性皮膚炎 / EoE 時優先考慮，且使用較高劑量（300 mg q2w）'},
       {t:'ok',  text:'青少年（12–17 歲）OCS 條件較寬鬆（1–3 個月即可）'},
     ],
-    note:'唯一有 OCS 年齡分層條件的藥物。使用 32 週後評估惡化情形。OCS 依賴型或合併 AD/CRSwNP 者使用較高起始劑量（600 mg）及維持劑量（300 mg q2w）。',
+    note:'唯一有 OCS 年齡分層條件的藥物（成人過去 3 個月，青少年 1–3 個月）。使用 32 週後評估惡化情形。OCS 依賴型或合併 AD/CRSwNP 者使用較高起始劑量（600 mg）及維持劑量（300 mg q2w）。',
     schedWks:[1,3,5,7,9,11,13],schedFilled:[0,1,2,3,4,5,6],
   },
   tezepelumab:{
@@ -381,7 +381,7 @@ const CL={
     {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
     {req:true, label:'肺功能 (PFT) 檢查報告', note:'FEV1 reversibility <12% 不強制'},
     {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'提供最高值佐證；超過 12 個月的歷史紀錄亦可佐證；OCS 後下降者可提供治療前紀錄'},
-    {req:true, label:'OCS 使用紀錄：過去 6 個月，≥5 mg/天 prednisolone', note:'可採累積等效劑量計算（≥900 mg）；不強制每日持續服用'},
+    {req:true, label:'OCS 使用紀錄：過去 3 個月，≥5 mg/天 prednisolone', note:'或等價當量；BEC 因 OCS 使用後下降者可提供治療前紀錄'},
     {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
     {req:true, label:'至少 1 次急診或住院紀錄', note:'不需兩次均急診'},
     {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
@@ -392,7 +392,7 @@ const CL={
     {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
     {req:true, label:'肺功能 (PFT) 檢查報告', note:''},
     {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'提供最高值；超過 12 個月的歷史紀錄亦可佐證'},
-    {req:true, label:'OCS 使用紀錄：過去 6 個月，≥5 mg/天 prednisolone', note:'可採累積等效劑量計算（≥900 mg）'},
+    {req:true, label:'OCS 使用紀錄：過去 3 個月，≥5 mg/天 prednisolone', note:'或等價當量'},
     {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
     {req:true, label:'至少 1 次急診或住院紀錄', note:''},
     {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
@@ -404,7 +404,7 @@ const CL={
     {req:false,label:'非抽菸或積極戒菸（病歷記載）', note:''},
     {req:true, label:'肺功能 (PFT) 檢查報告', note:''},
     {req:true, label:'BEC ≥300 cells/μL（12 個月內）', note:'FeNO ≥25 ppb 可作輔助佐證'},
-    {req:true, label:'OCS 使用紀錄（依年齡分層）', note:'18歲以上→過去6個月 ≥5mg/天｜12–17歲→過去1–3個月 ≥5mg/天（或等價當量）'},
+    {req:true, label:'OCS 使用紀錄（依年齡分層）', note:'18歲以上→過去3個月 ≥5mg/天｜12–17歲→過去1–3個月 ≥5mg/天（或等價當量）'},
     {req:true, label:'過去 12 個月急性惡化 ≥2 次（使用全身性類固醇）', note:''},
     {req:true, label:'至少 1 次急診或住院紀錄', note:''},
     {req:true, label:'高劑量 ICS + LABA（± LAMA）用藥紀錄', note:''},
@@ -471,11 +471,11 @@ function getRecs(age,IgE,eos,FeNO,exac,er,ocsM,comorbidity){
   if(age>=12&&IgE>=30&&IgE<=1300){
     recs.push({key:'omalizumab',score:pr?4:(IgE>=100?3:2),note:pr?'懷孕中首選，唯一建議的生物製劑':'過敏性氣喘首選，IgE 符合範圍，不需 OCS 或惡化次數條件'});
   }
-  if(age>=18&&eos>=300&&exac>=2&&er&&ocsM>=6){
+  if(age>=18&&eos>=300&&exac>=2&&er&&ocsM>=3){
     recs.push({key:'mepolizumab',score:eos>=500?3:2,note:'嗜酸性球符合，抑制 IL-5 路徑'});
     recs.push({key:'benralizumab',score:eos>=500?3:2,note:'直接清除嗜酸性球；維持期 Q8W，注射頻率最低'});
   }
-  const dupiOk=(age>=18&&ocsM>=6)||(age>=12&&age<18&&ocsM>=1);
+  const dupiOk=(age>=18&&ocsM>=3)||(age>=12&&age<18&&ocsM>=1);
   if(age>=12&&eos>=300&&exac>=2&&er&&dupiOk){
     let sc=2;
     if(FeNO>=25) sc++;
